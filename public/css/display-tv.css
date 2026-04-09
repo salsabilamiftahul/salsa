@@ -1,0 +1,450 @@
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-size: 100%;
+}
+
+/* Layout shell */
+body.display-tv {
+  overflow: hidden;
+  background: #0b0d18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-shell {
+  width: min(96vw, calc(96vh * 16 / 9));
+  height: min(calc(96vw * 9 / 16), 96vh);
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.tv-screen {
+  width: 100%;
+  margin: 0;
+  min-height: 0;
+  padding-bottom: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+/* Header */
+.tv-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.4rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.tv-brand img {
+  border-radius: 10px;
+}
+
+.tv-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.tv-subtitle {
+  font-size: 1.3rem;
+  letter-spacing: 0.4px;
+  margin-top: 0.1rem;
+}
+
+.tv-time .tv-clock {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.tv-time .tv-date {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Cards + panels */
+.tv-card {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(10, 14, 26, 0.92);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.tv-card-main {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.tv-panel {
+  background: rgba(10, 14, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 0.2rem;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+}
+
+.tv-panel .card {
+  height: 100%;
+}
+
+@media (min-width: 1200px) {
+  .tv-panel-main {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.tv-card-tight .card-body {
+  padding: 0.75rem 1rem;
+}
+
+.tv-card-right .card-body {
+  padding: 0.55rem 0.7rem 0.55rem;
+}
+
+.tv-service-hours-card {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible;
+}
+
+.tv-service-hours-card .card-body {
+  height: 100%;
+}
+
+.tv-agenda-mini-card {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible;
+}
+
+.tv-agenda-mini-card .card-body {
+  height: 100%;
+}
+
+
+.tv-right-row {
+  display: block;
+}
+
+.tv-right-stack .grid-margin {
+  height: auto !important;
+  min-height: 0 !important;
+  display: block;
+  align-self: flex-start;
+  margin-bottom: 0.9rem !important;
+}
+
+.tv-right-stack .grid-margin:last-child {
+  margin-bottom: 0 !important;
+}
+
+.display-tv .grid-margin {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.tv-right-stack .stretch-card {
+  align-items: flex-start !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.tv-right-stack .card,
+.tv-right-stack .card-body {
+  height: auto !important;
+}
+
+.tv-right-stack .stretch-card > .card {
+  height: auto !important;
+}
+
+.tv-card-main .card-body {
+  padding: 1.25rem 1.5rem;
+  position: relative;
+}
+
+/* Section titles */
+.tv-section-title {
+  font-size: 1.28rem;
+  font-weight: 700;
+  margin-bottom: 0.55rem;
+  letter-spacing: 0.6px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.tv-section-text {
+  position: relative;
+  padding-bottom: 0.35rem;
+}
+
+.tv-section-text::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0.2rem;
+  border-radius: 999px;
+  background: var(--section-accent, #6ea3ff);
+}
+
+.tv-section-title--hours {
+  --section-accent: #43d17c;
+}
+
+.tv-section-title--agenda {
+  --section-accent: #ffb347;
+}
+
+.tv-section-title--gallery {
+  --section-accent: #7aa7ff;
+}
+
+
+.tv-hours-list {
+  font-size: 1.1rem;
+  line-height: 1.35;
+}
+
+.tv-hours-list span {
+  color: #ffffff;
+}
+
+.tv-hours-list .text-muted {
+  color: #ffffff !important;
+  opacity: 1;
+}
+
+/* Agenda mini list */
+.tv-mini-table {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tv-mini-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tv-mini-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.tv-mini-value {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-align: right;
+  flex: 1 1 auto;
+}
+
+.tv-mini-title {
+  text-align: left;
+  font-weight: 500;
+  color: #ffffff;
+  padding-right: 0.6rem;
+}
+
+.tv-mini-time {
+  white-space: nowrap;
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.tv-mini-time .tv-mini-date {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.tv-mini-time .tv-mini-clock {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.85;
+  line-height: 1.2;
+  margin-top: 0.2rem;
+}
+
+/* Gallery */
+.tv-gallery-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #0b0d18;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tv-gallery-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: linear-gradient(180deg, rgba(11,13,24,0) 0%, rgba(6,8,16,0.92) 100%);
+}
+
+/* Marquee */
+.tv-marquee {
+  width: 100%;
+  margin: 0;
+  padding: 0.7rem 1.1rem;
+  border-radius: 16px;
+  background: rgba(10, 12, 22, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.marquee-track {
+  display: inline-flex;
+  width: max-content;
+  white-space: nowrap;
+  gap: 2.5rem;
+  align-items: center;
+  will-change: transform;
+  animation: tvMarquee var(--marquee-duration, 30s) linear infinite;
+}
+
+.marquee-item {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #f5f7ff;
+  letter-spacing: 0.3px;
+}
+
+.tv-section-header {
+  margin-bottom: 0.9rem;
+}
+
+.tv-status-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+}
+
+.tv-status-badge.is-open {
+  background: rgba(50, 205, 120, 0.18);
+  color: #a6ffd2;
+  border-color: rgba(50, 205, 120, 0.5);
+}
+
+.tv-status-badge.is-closed {
+  background: rgba(240, 86, 86, 0.18);
+  color: #ffb1b1;
+  border-color: rgba(240, 86, 86, 0.55);
+}
+
+.tv-rotator {
+  position: relative;
+  aspect-ratio: 5 / 3;
+}
+
+.tv-rotator-item {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  transition: opacity 600ms ease, transform 600ms ease;
+  pointer-events: none;
+}
+
+.tv-rotator-item.is-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.tv-rotator-item.is-exiting {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  z-index: 1;
+}
+
+.tv-rotator-block { width: 100%; }
+
+.tv-main-rotator {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.tv-main-rotator-item {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 700ms ease, transform 900ms ease;
+}
+
+.tv-main-rotator-item.is-active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.tv-main-rotator-item.is-exiting {
+  opacity: 0;
+  transform: scale(0.99);
+  z-index: 1;
+}
+
+.tv-main-frame {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.tv-main-media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+
+@media (min-width: 1200px) {
+  .tv-title { font-size: 1.6rem; }
+  .tv-time .tv-clock { font-size: 2.1rem; }
+  .marquee-item { font-size: 1.6rem; }
+}
+
+@keyframes tvMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}

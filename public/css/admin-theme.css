@@ -1,0 +1,189 @@
+/* Light theme overrides for Corona (admin + auth) */
+.theme-light body {
+  background: #f4f6fb;
+  color: #1f2937;
+}
+
+.theme-light .content-wrapper,
+.theme-light .container-scroller,
+.theme-light .page-body-wrapper {
+  background: transparent;
+}
+
+.theme-light .navbar,
+.theme-light .sidebar,
+.theme-light .footer {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.theme-light .sidebar .sidebar-brand-wrapper,
+.theme-light .sidebar .sidebar-brand-wrapper .brand-logo,
+.theme-light .sidebar .sidebar-brand-wrapper .brand-logo-mini {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.theme-light .sidebar .nav .nav-item .nav-link,
+.theme-light .navbar .nav-link,
+.theme-light .sidebar .nav .nav-item .menu-title {
+  color: #1f2937 !important;
+}
+
+.theme-light .sidebar .nav .nav-item.active > .nav-link,
+.theme-light .sidebar .nav .nav-item:hover > .nav-link {
+  background: rgba(15, 23, 42, 0.06) !important;
+}
+
+.theme-light .card,
+.theme-light .modal-content {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  color: #111827;
+}
+
+.theme-light .table,
+.theme-light .table th,
+.theme-light .table td {
+  color: #111827 !important;
+}
+
+.theme-light .table thead th {
+  border-bottom: 2px solid rgba(15, 23, 42, 0.15) !important;
+}
+
+.theme-light .table td,
+.theme-light .table th {
+  border-top: 1px solid rgba(15, 23, 42, 0.12) !important;
+}
+
+.theme-light .dropdown-menu,
+.theme-light .navbar-dropdown {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #111827 !important;
+}
+
+.theme-light .dropdown-menu .dropdown-item,
+.theme-light .navbar-dropdown .dropdown-item,
+.theme-light .navbar-dropdown .preview-item-content p {
+  color: #111827 !important;
+}
+
+.theme-light .dropdown-menu .dropdown-item:hover,
+.theme-light .navbar-dropdown .dropdown-item:hover {
+  background: rgba(15, 23, 42, 0.06) !important;
+}
+
+.theme-light .preview-icon.bg-dark {
+  background: rgba(15, 23, 42, 0.12) !important;
+}
+
+.theme-light .pagination .page-item .page-link {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+.theme-light .pagination .page-item.active .page-link {
+  background: rgba(15, 23, 42, 0.1) !important;
+  color: #111827 !important;
+  border-color: rgba(15, 23, 42, 0.25) !important;
+}
+
+.theme-light .pagination .page-item.disabled .page-link {
+  background: rgba(15, 23, 42, 0.04) !important;
+  color: rgba(17, 24, 39, 0.45) !important;
+}
+
+.theme-light .form-control,
+.theme-light .custom-select {
+  background: #ffffff;
+  color: #111827;
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+.theme-light .custom-select {
+  padding-right: 2rem;
+}
+
+.theme-light .text-muted {
+  color: rgba(17, 24, 39, 0.6) !important;
+}
+
+.theme-light .text-white {
+  color: #111827 !important;
+}
+
+/* Admin utilities */
+.filter-select {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  border-color: rgba(15, 23, 42, 0.2) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23111827' d='M7.41,7.84L12,12.42L16.59,7.84L18,9.25L12,15.25L6,9.25L7.41,7.84Z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.65rem center !important;
+  background-size: 16px 16px !important;
+  padding-right: 2.1rem !important;
+  appearance: none !important;
+}
+
+.admin-thumb {
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.admin-preview-image {
+  max-width: 240px;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.admin-preview-video {
+  max-width: 360px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.theme-light .card-title,
+.theme-light .card .card-title {
+  color: #111827 !important;
+}
+
+.theme-light .btn-outline-light {
+  color: #111827;
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+.theme-light .btn-outline-light:hover {
+  background: rgba(15, 23, 42, 0.08);
+  color: #111827;
+}
+
+.theme-toggle-btn {
+  border-radius: 50%;
+  font-weight: 600;
+  width: 38px;
+  height: 38px;
+  padding: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 1px;
+  line-height: 1;
+}
+
+.theme-toggle-btn i {
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
