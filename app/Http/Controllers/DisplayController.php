@@ -6,6 +6,7 @@ use App\Models\Agenda;
 use App\Models\GalleryItem;
 use App\Models\MainContent;
 use App\Models\Setting;
+use App\Support\DisplayTheme;
 use Illuminate\View\View;
 
 class DisplayController extends Controller
@@ -34,6 +35,7 @@ class DisplayController extends Controller
                 'marquee_messages',
                 'marquee_duration_seconds',
                 'display_content_categories',
+                'display_background_color',
             ])
             ->pluck('value', 'key');
 
@@ -75,6 +77,7 @@ class DisplayController extends Controller
         [$legacyWeekdayStart, $legacyWeekdayEnd] = $parseLegacyTimeRange($legacyWeekday);
         [$legacyFridayStart, $legacyFridayEnd] = $parseLegacyTimeRange($legacyFriday);
         [$legacyWeekendStart, $legacyWeekendEnd] = $parseLegacyTimeRange($legacyWeekend);
+        $displayTheme = DisplayTheme::themeVariables($settings->get('display_background_color'));
 
         return view('display.tv', [
             // Header display
@@ -93,7 +96,8 @@ class DisplayController extends Controller
             // Teks berjalan
             'marqueeMessages' => $marqueeMessages,
             'marqueeDurationSeconds' => (int) $settings->get('marquee_duration_seconds', 30),
-            // Agenda hari ini dan agenda mendatang (maks 3 item agar sejajar tinggi galeri)
+            'displayTheme' => $displayTheme,
+            // Agenda hari ini dan agenda mendatang (maks 2 item agar sejajar tinggi galeri)
             'agendas' => Agenda::query()
                 ->where(function ($query) use ($now, $today) {
                     $query->where('starts_at', '>=', $today)

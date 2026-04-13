@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             ['key' => 'marquee_messages', 'value' => ''],
             ['key' => 'marquee_duration_seconds', 'value' => '30'],
             ['key' => 'display_content_categories', 'value' => null],
+            ['key' => 'display_background_color', 'value' => '#0B0D18'],
         ];
 
         foreach ($defaultSettings as $setting) {

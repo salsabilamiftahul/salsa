@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\DisplayTheme;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,6 +17,7 @@ class PreviewDisplayController extends Controller
         $settings = Setting::query()
             ->whereIn('key', [
                 'display_content_categories',
+                'display_background_color',
             ])
             ->pluck('value', 'key');
 
@@ -32,9 +34,13 @@ class PreviewDisplayController extends Controller
             $selected = $categories;
         }
 
+        $displayTheme = DisplayTheme::themeVariables($settings->get('display_background_color'));
+
         return view('admin.preview-display', [
             'categories' => $categories,
             'selectedCategories' => $selected,
+            'displayBackgroundColor' => $displayTheme['backgroundColor'],
+            'displayTextColor' => $displayTheme['textColor'],
         ]);
     }
 
@@ -44,6 +50,7 @@ class PreviewDisplayController extends Controller
         $data = $request->validate([
             'categories' => ['nullable', 'array'],
             'categories.*' => ['string', 'in:' . implode(',', $this->availableCategories())],
+            'display_background_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}){1,2}$/'],
         ]);
 
         $categories = array_values(array_unique($data['categories'] ?? []));
@@ -51,6 +58,10 @@ class PreviewDisplayController extends Controller
         Setting::query()->updateOrCreate(
             ['key' => 'display_content_categories'],
             ['value' => json_encode($categories)]
+        );
+        Setting::query()->updateOrCreate(
+            ['key' => 'display_background_color'],
+            ['value' => DisplayTheme::normalizeHexColor($data['display_background_color'])]
         );
 
         return redirect()->route('admin.preview.edit')
