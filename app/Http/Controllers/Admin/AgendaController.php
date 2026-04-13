@@ -75,7 +75,6 @@ class AgendaController extends Controller
             'agenda_date' => ['required', 'date'],
             'agenda_time' => ['required', 'date_format:H:i'],
             'agenda_time_end' => ['nullable', 'date_format:H:i'],
-            'is_active' => ['nullable', 'boolean'],
         ]);
         $validator->after(function ($validator) use ($request) {
             $start = $request->input('agenda_time');
@@ -102,7 +101,6 @@ class AgendaController extends Controller
             'image_path' => null,
             'starts_at' => $startsAt,
             'ends_at' => $endsAt,
-            'is_active' => (bool) ($data['is_active'] ?? true),
         ]);
 
         return redirect()->route('admin.agendas.index')
@@ -122,7 +120,6 @@ class AgendaController extends Controller
             'agenda_date' => ['required', 'date'],
             'agenda_time' => ['required', 'date_format:H:i'],
             'agenda_time_end' => ['nullable', 'date_format:H:i'],
-            'is_active' => ['nullable', 'boolean'],
         ]);
         $validator->after(function ($validator) use ($request) {
             $start = $request->input('agenda_time');
@@ -149,7 +146,6 @@ class AgendaController extends Controller
             'image_path' => $agenda->image_path,
             'starts_at' => $startsAt,
             'ends_at' => $endsAt,
-            'is_active' => (bool) ($data['is_active'] ?? false),
         ]);
         $agenda->save();
 

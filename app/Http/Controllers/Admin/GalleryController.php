@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\GalleryItem;
+use App\Support\UploadValidation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -37,7 +38,7 @@ class GalleryController extends Controller
         // Validasi input galeri.
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'image' => ['required', 'image', 'max:10240'],
+            'image' => ['required', ...UploadValidation::imageRules()],
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date'],
             'is_active' => ['nullable', 'boolean'],
@@ -45,7 +46,7 @@ class GalleryController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('galleries', 'public');
+            $imagePath = UploadValidation::storeUploadedFile($request->file('image'), 'galleries', 'public');
         }
 
         GalleryItem::query()->create([
@@ -72,8 +73,7 @@ class GalleryController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'image' => [
                 Rule::requiredIf(!$gallery->image_path),
-                'image',
-                'max:10240',
+                ...UploadValidation::imageRules(),
             ],
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date'],
@@ -81,7 +81,7 @@ class GalleryController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $gallery->image_path = $request->file('image')->store('galleries', 'public');
+            $gallery->image_path = UploadValidation::storeUploadedFile($request->file('image'), 'galleries', 'public');
         }
 
         $gallery->fill([

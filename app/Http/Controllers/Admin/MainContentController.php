@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\MainContent;
+use App\Support\UploadValidation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -99,7 +100,7 @@ class MainContentController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'in:kegiatan,spp,sop,video,lain-lain'],
-            'media' => ['required', 'file', 'mimetypes:image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/ogg,video/quicktime', 'max:512000'],
+            'media' => ['required', ...UploadValidation::mainContentMediaRules()],
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date'],
             'is_active' => ['nullable', 'boolean'],
@@ -109,9 +110,8 @@ class MainContentController extends Controller
         $mediaType = 'image';
         if ($request->hasFile('media')) {
             $file = $request->file('media');
-            $mediaPath = $file->store('main-contents', 'public');
-            $mimeType = (string) $file->getMimeType();
-            $mediaType = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+            $mediaPath = UploadValidation::storeUploadedFile($file, 'main-contents', 'public');
+            $mediaType = UploadValidation::detectMainContentMediaType($file);
         }
 
         MainContent::query()->create([
@@ -145,9 +145,7 @@ class MainContentController extends Controller
             'media' => [
                 Rule::requiredIf(!$hasExistingMedia),
                 'nullable',
-                'file',
-                'mimetypes:image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/ogg,video/quicktime',
-                'max:512000',
+                ...UploadValidation::mainContentMediaRules(),
             ],
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date'],
@@ -156,9 +154,8 @@ class MainContentController extends Controller
 
         if ($request->hasFile('media')) {
             $file = $request->file('media');
-            $mainContent->image_path = $file->store('main-contents', 'public');
-            $mimeType = (string) $file->getMimeType();
-            $mainContent->media_type = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+            $mainContent->image_path = UploadValidation::storeUploadedFile($file, 'main-contents', 'public');
+            $mainContent->media_type = UploadValidation::detectMainContentMediaType($file);
         }
 
         $mainContent->fill([

@@ -12,6 +12,9 @@ class DisplayController extends Controller
 {
     public function index(): View
     {
+        $now = now();
+        $today = $now->copy()->startOfDay();
+
         // Ambil semua konfigurasi display TV.
         $settings = Setting::query()
             ->whereIn('key', [
@@ -90,12 +93,10 @@ class DisplayController extends Controller
             // Teks berjalan
             'marqueeMessages' => $marqueeMessages,
             'marqueeDurationSeconds' => (int) $settings->get('marquee_duration_seconds', 30),
-            // Agenda terdekat (maks 3 item agar sejajar tinggi galeri)
+            // Agenda hari ini dan agenda mendatang (maks 3 item agar sejajar tinggi galeri)
             'agendas' => Agenda::query()
-                ->where('is_active', true)
-                ->where(function ($query) {
-                    $now = now();
-                    $query->where('starts_at', '>=', $now)
+                ->where(function ($query) use ($now, $today) {
+                    $query->where('starts_at', '>=', $today)
                         ->orWhere(function ($subQuery) use ($now) {
                             $subQuery->where('starts_at', '<=', $now)
                                 ->where('ends_at', '>=', $now);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\UploadValidation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -74,7 +75,7 @@ class SettingsController extends Controller
         // Validasi input pengaturan.
         $data = $request->validate([
             'institution_name' => ['required', 'string', 'max:255'],
-            'logo' => ['nullable', 'image', 'max:10240'],
+            'logo' => ['nullable', ...UploadValidation::imageRules()],
             'service_hours_weekday_start' => ['required', 'date_format:H:i'],
             'service_hours_weekday_end' => ['required', 'date_format:H:i'],
             'service_hours_friday_start' => ['required', 'date_format:H:i'],
@@ -96,7 +97,7 @@ class SettingsController extends Controller
         if ($request->hasFile('logo')) {
             $currentLogoPath = Setting::query()->where('key', 'logo_path')->value('value');
             $logoFile = $request->file('logo');
-            $logoFileName = $logoFile->hashName('branding');
+            $logoFileName = 'branding/' . UploadValidation::storedFileName($logoFile);
 
             File::ensureDirectoryExists(public_path('branding'));
             $logoFile->move(public_path('branding'), basename($logoFileName));

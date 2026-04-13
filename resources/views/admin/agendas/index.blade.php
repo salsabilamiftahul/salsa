@@ -58,7 +58,7 @@
               <th class="col-title">Nama</th>
               <th class="col-schedule">Tanggal</th>
               <th>Jam</th>
-              <th class="col-status">Status</th>
+              <th>Status</th>
               <th class="col-actions">Aksi</th>
             </tr>
           </thead>
@@ -76,20 +76,23 @@
                     ? \Carbon\Carbon::parse($agenda->ends_at)->format('H:i')
                     : null;
                   $agendaTimeLabel = $agendaTimeEnd ? ($agendaTime . ' - ' . $agendaTimeEnd) : $agendaTime;
+                  $now = now();
+                  $statusLabel = 'Berlangsung';
+                  $statusClass = 'text-success';
+
+                  if ($agenda->ends_at && $agenda->ends_at->lt($now)) {
+                    $statusLabel = 'Selesai';
+                    $statusClass = 'text-muted';
+                  } elseif ($agenda->starts_at && $agenda->starts_at->gt($now)) {
+                    $statusLabel = 'Terjadwal';
+                    $statusClass = 'text-warning';
+                  }
                 @endphp
                 <td class="col-title">{{ $agenda->title }}</td>
                 <td class="col-schedule">{{ $agendaDate }}</td>
                 <td>{{ $agendaTimeLabel }}</td>
-                <td class="col-status">
-                  @php
-                    $now = now();
-                    $isCurrentlyActive = $agenda->is_active
-                      && (!optional($agenda->starts_at)->gt($now))
-                      && (!optional($agenda->ends_at)->lt($now));
-                  @endphp
-                  <span class="{{ $isCurrentlyActive ? 'text-success' : 'text-danger' }}">
-                    {{ $isCurrentlyActive ? 'Aktif' : 'Nonaktif' }}
-                  </span>
+                <td>
+                  <span class="{{ $statusClass }}">{{ $statusLabel }}</span>
                 </td>
                 <td class="col-actions d-flex">
                   <a href="{{ route('admin.agendas.edit', $agenda) }}" class="btn btn-sm btn-outline-light btn-icon-action mr-2" aria-label="Edit" title="Edit">

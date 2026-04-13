@@ -13,58 +13,100 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
+        // Helper: menentukan status tampil untuk agenda berdasarkan jadwal.
+        $agendaStatus = function (Agenda $agenda): array {
+            $now = now();
+            $startsAt = $agenda->starts_at;
+            $endsAt = $agenda->ends_at;
+
+            if ($endsAt && $endsAt->lt($now)) {
+                return [
+                    'label' => 'Selesai',
+                    'class' => 'text-muted',
+                ];
+            }
+
+            if ($startsAt && $startsAt->gt($now)) {
+                return [
+                    'label' => 'Terjadwal',
+                    'class' => 'text-warning',
+                ];
+            }
+
+            return [
+                'label' => 'Berlangsung',
+                'class' => 'text-success',
+            ];
+        };
+
         // Helper: menentukan status aktif berdasarkan jadwal dan flag.
-        $isCurrentlyActive = function ($model): bool {
+        $visibilityStatus = function ($model): array {
             $now = now();
             $startsAt = $model->starts_at ?? null;
             $endsAt = $model->ends_at ?? null;
 
-            if (!$model->is_active) {
-                return false;
+            $isActive = (bool) ($model->is_active ?? false);
+
+            if ($isActive && $startsAt && $startsAt->gt($now)) {
+                $isActive = false;
             }
 
-            if ($startsAt && $startsAt->gt($now)) {
-                return false;
+            if ($isActive && $endsAt && $endsAt->lt($now)) {
+                $isActive = false;
             }
 
-            if ($endsAt && $endsAt->lt($now)) {
-                return false;
-            }
-
-            return true;
+            return [
+                'label' => $isActive ? 'Aktif' : 'Nonaktif',
+                'class' => $isActive ? 'text-success' : 'text-danger',
+            ];
         };
 
         // Gabungkan data terbaru dari agenda, galeri, dan konten utama.
         $recentContents = collect()
             ->merge(
-                Agenda::query()->latest()->limit(5)->get()->map(fn (Agenda $agenda) => [
-                    'type' => 'Agenda',
-                    'title' => $agenda->title,
-                    'created_at' => $agenda->created_at,
-                    'is_active' => $isCurrentlyActive($agenda),
-                    'edit_url' => route('admin.agendas.edit', $agenda),
-                    'delete_url' => route('admin.agendas.destroy', $agenda),
-                ])
+                Agenda::query()->latest()->limit(5)->get()->map(function (Agenda $agenda) use ($agendaStatus) {
+                    $status = $agendaStatus($agenda);
+
+                    return [
+                        'type' => 'Agenda',
+                        'title' => $agenda->title,
+                        'created_at' => $agenda->created_at,
+                        'status_label' => $status['label'],
+                        'status_class' => $status['class'],
+                        'edit_url' => route('admin.agendas.edit', $agenda),
+                        'delete_url' => route('admin.agendas.destroy', $agenda),
+                    ];
+                })
             )
             ->merge(
-                GalleryItem::query()->latest()->limit(5)->get()->map(fn (GalleryItem $gallery) => [
-                    'type' => 'Galeri Foto',
-                    'title' => $gallery->title,
-                    'created_at' => $gallery->created_at,
-                    'is_active' => $isCurrentlyActive($gallery),
-                    'edit_url' => route('admin.galleries.edit', $gallery),
-                    'delete_url' => route('admin.galleries.destroy', $gallery),
-                ])
+                GalleryItem::query()->latest()->limit(5)->get()->map(function (GalleryItem $gallery) use ($visibilityStatus) {
+                    $status = $visibilityStatus($gallery);
+
+                    return [
+                        'type' => 'Galeri Foto',
+                        'title' => $gallery->title,
+                        'created_at' => $gallery->created_at,
+                        'status_label' => $status['label'],
+                        'status_class' => $status['class'],
+                        'edit_url' => route('admin.galleries.edit', $gallery),
+                        'delete_url' => route('admin.galleries.destroy', $gallery),
+                    ];
+                })
             )
             ->merge(
-                MainContent::query()->latest()->limit(5)->get()->map(fn (MainContent $content) => [
-                    'type' => 'Konten',
-                    'title' => $content->title,
-                    'created_at' => $content->created_at,
-                    'is_active' => $isCurrentlyActive($content),
-                    'edit_url' => route('admin.main-contents.edit', $content),
-                    'delete_url' => route('admin.main-contents.destroy', $content),
-                ])
+                MainContent::query()->latest()->limit(5)->get()->map(function (MainContent $content) use ($visibilityStatus) {
+                    $status = $visibilityStatus($content);
+
+                    return [
+                        'type' => 'Konten',
+                        'title' => $content->title,
+                        'created_at' => $content->created_at,
+                        'status_label' => $status['label'],
+                        'status_class' => $status['class'],
+                        'edit_url' => route('admin.main-contents.edit', $content),
+                        'delete_url' => route('admin.main-contents.destroy', $content),
+                    ];
+                })
             )
             ->sortByDesc('created_at')
             ->values();

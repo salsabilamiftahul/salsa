@@ -105,7 +105,7 @@
             </div>
           </div>
 
-          {{-- Agenda terdekat (dibatasi agar sejajar tinggi galeri) --}}
+          {{-- Agenda terdekat --}}
           <div class="col-12 grid-margin">
             <div class="card tv-card tv-card-tight tv-card-right tv-agenda-mini-card">
               <div class="card-body">

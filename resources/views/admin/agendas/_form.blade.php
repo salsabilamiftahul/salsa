@@ -21,8 +21,3 @@
       value="{{ old('agenda_time_end', optional($agenda->ends_at ?? null)->format('H:i')) }}">
   </div>
 </div>
-<div class="form-group form-check">
-  <input type="checkbox" name="is_active" id="is_active" class="form-check-input" value="1"
-    {{ old('is_active', $agenda->is_active ?? true) ? 'checked' : '' }}>
-  <label for="is_active" class="form-check-label">Aktif</label>
-</div>

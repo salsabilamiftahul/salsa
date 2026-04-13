@@ -77,8 +77,8 @@
                     <td class="col-title">{{ $content['title'] }}</td>
                     <td>{{ optional($content['created_at'])->format('d M Y H:i') }}</td>
                     <td class="col-status">
-                      <span class="{{ $content['is_active'] ? 'text-success' : 'text-danger' }}">
-                        {{ $content['is_active'] ? 'Aktif' : 'Nonaktif' }}
+                      <span class="{{ $content['status_class'] }}">
+                        {{ $content['status_label'] }}
                       </span>
                     </td>
                     <td class="col-actions">
