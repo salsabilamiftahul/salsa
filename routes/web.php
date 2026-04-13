@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AgendaController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -27,6 +28,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');
     Route::put('/account', [AccountController::class, 'update'])->name('account.update');
+});
+
+Route::middleware(['auth', 'admin', 'super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('admins', AdminUserController::class)->except(['show']);
 });
 
 if (file_exists(__DIR__.'/auth.php')) {

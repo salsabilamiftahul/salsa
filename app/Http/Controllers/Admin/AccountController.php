@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class AccountController extends Controller
@@ -22,7 +23,7 @@ class AccountController extends Controller
         // Validasi username + password opsional.
         $data = $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $request->user()?->id],
-            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
+            'password' => ['nullable', 'confirmed', Password::defaults()],
         ]);
 
         $user = $request->user();

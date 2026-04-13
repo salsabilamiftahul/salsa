@@ -7,18 +7,24 @@
     <div class="col-lg-6 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          {{-- Update username + password admin --}}
           <h4 class="card-title theme-light-title">Pengaturan Akun</h4>
           <form method="POST" action="{{ route('admin.account.update') }}">
             @csrf
             @method('PUT')
             <div class="form-group">
               <label for="username">Username Admin</label>
-              <input type="text" name="username" id="username" class="form-control" value="{{ old('username', $adminUsername) }}" required>
+              <input type="text" name="username" id="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username', $adminUsername) }}" required>
+              @error('username')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+              @enderror
             </div>
             <div class="form-group">
               <label for="password">Password Baru</label>
-              <input type="password" name="password" id="password" class="form-control">
+              <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror">
+              <small class="form-text text-muted">Kosongkan jika tidak ingin mengganti password.</small>
+              @error('password')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+              @enderror
             </div>
             <div class="form-group">
               <label for="password_confirmation">Konfirmasi Password</label>

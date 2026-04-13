@@ -151,6 +151,16 @@
               <span class="menu-title">Pengaturan</span>
             </a>
           </li>
+          @auth
+            @if(auth()->user()->isSuperAdmin())
+              <li class="nav-item menu-items">
+                <a class="nav-link" href="{{ route('admin.admins.index') }}">
+                  <span class="menu-icon"><i class="mdi mdi-account-multiple"></i></span>
+                  <span class="menu-title">Kelola Admin</span>
+                </a>
+              </li>
+            @endif
+          @endauth
         </ul>
       </nav>
 
