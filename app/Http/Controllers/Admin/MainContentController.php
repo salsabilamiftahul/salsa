@@ -171,6 +171,19 @@ class MainContentController extends Controller
             ->with('status', 'Konten utama berhasil diperbarui.');
     }
 
+    public function toggleStatus(Request $request, MainContent $mainContent): RedirectResponse
+    {
+        $data = $request->validate([
+            'is_active' => ['required', 'boolean'],
+        ]);
+
+        $mainContent->update([
+            'is_active' => (bool) $data['is_active'],
+        ]);
+
+        return back()->with('status', 'Status konten utama berhasil diperbarui.');
+    }
+
     public function destroy(MainContent $mainContent): RedirectResponse
     {
         $mainContent->delete();

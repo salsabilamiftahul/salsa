@@ -39,6 +39,8 @@ class DatabaseSeeder extends Seeder
             ['key' => 'marquee_duration_seconds', 'value' => '30'],
             ['key' => 'display_content_categories', 'value' => null],
             ['key' => 'display_background_color', 'value' => '#0B0D18'],
+            ['key' => 'display_text_color', 'value' => '#F8FAFC'],
+            ['key' => 'display_card_background_color', 'value' => '#151B29'],
         ];
 
         foreach ($defaultSettings as $setting) {

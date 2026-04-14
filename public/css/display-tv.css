@@ -29,9 +29,11 @@ body.display-tv {
 }
 
 .tv-shell {
-  width: min(98vw, calc(90vh * 16 / 9));
-  height: min(calc(98vw * 9 / 16), 90vh);
-  aspect-ratio: 16 / 9;
+  width: calc(100vw - 0.2rem);
+  height: calc(100vh - 0.4rem);
+  max-width: none;
+  max-height: none;
+  aspect-ratio: auto;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;

@@ -96,6 +96,19 @@ class GalleryController extends Controller
             ->with('status', 'Galeri berhasil diperbarui.');
     }
 
+    public function toggleStatus(Request $request, GalleryItem $gallery): RedirectResponse
+    {
+        $data = $request->validate([
+            'is_active' => ['required', 'boolean'],
+        ]);
+
+        $gallery->update([
+            'is_active' => (bool) $data['is_active'],
+        ]);
+
+        return back()->with('status', 'Status galeri berhasil diperbarui.');
+    }
+
     public function destroy(GalleryItem $gallery): RedirectResponse
     {
         $gallery->delete();

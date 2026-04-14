@@ -18,6 +18,8 @@ class PreviewDisplayController extends Controller
             ->whereIn('key', [
                 'display_content_categories',
                 'display_background_color',
+                'display_text_color',
+                'display_card_background_color',
             ])
             ->pluck('value', 'key');
 
@@ -34,13 +36,21 @@ class PreviewDisplayController extends Controller
             $selected = $categories;
         }
 
-        $displayTheme = DisplayTheme::themeVariables($settings->get('display_background_color'));
+        $displayTheme = DisplayTheme::themeVariables(
+            $settings->get('display_background_color'),
+            $settings->get('display_text_color'),
+            $settings->get('display_card_background_color')
+        );
 
         return view('admin.preview-display', [
             'categories' => $categories,
             'selectedCategories' => $selected,
             'displayBackgroundColor' => $displayTheme['backgroundColor'],
             'displayTextColor' => $displayTheme['textColor'],
+            'displayCardBackgroundColor' => DisplayTheme::normalizeHexColor(
+                $settings->get('display_card_background_color'),
+                $displayTheme['cardBackgroundColor']
+            ),
         ]);
     }
 
@@ -51,6 +61,8 @@ class PreviewDisplayController extends Controller
             'categories' => ['nullable', 'array'],
             'categories.*' => ['string', 'in:' . implode(',', $this->availableCategories())],
             'display_background_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}){1,2}$/'],
+            'display_text_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}){1,2}$/'],
+            'display_card_background_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}){1,2}$/'],
         ]);
 
         $categories = array_values(array_unique($data['categories'] ?? []));
@@ -62,6 +74,14 @@ class PreviewDisplayController extends Controller
         Setting::query()->updateOrCreate(
             ['key' => 'display_background_color'],
             ['value' => DisplayTheme::normalizeHexColor($data['display_background_color'])]
+        );
+        Setting::query()->updateOrCreate(
+            ['key' => 'display_text_color'],
+            ['value' => DisplayTheme::normalizeHexColor($data['display_text_color'])]
+        );
+        Setting::query()->updateOrCreate(
+            ['key' => 'display_card_background_color'],
+            ['value' => DisplayTheme::normalizeHexColor($data['display_card_background_color'])]
         );
 
         return redirect()->route('admin.preview.edit')

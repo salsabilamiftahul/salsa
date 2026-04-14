@@ -4,14 +4,15 @@ namespace App\Support;
 
 class DisplayTheme
 {
-    public static function themeVariables(?string $backgroundColor): array
+    public static function themeVariables(?string $backgroundColor, ?string $textColor = null, ?string $cardBackgroundColor = null): array
     {
         $backgroundColor = self::normalizeHexColor($backgroundColor);
-        $textColor = self::textColorFor($backgroundColor);
+        $textColor = self::normalizeHexColorValue($textColor) ?? self::textColorFor($backgroundColor);
         $usesDarkText = $textColor === '#111827';
 
         $panelColor = self::mix($backgroundColor, $textColor, $usesDarkText ? 0.06 : 0.08);
-        $cardColor = self::mix($backgroundColor, $textColor, $usesDarkText ? 0.1 : 0.14);
+        $cardColor = self::normalizeHexColorValue($cardBackgroundColor)
+            ?? self::mix($backgroundColor, $textColor, $usesDarkText ? 0.1 : 0.14);
         $surfaceColor = self::mix($backgroundColor, $textColor, $usesDarkText ? 0.14 : 0.06);
 
         return [

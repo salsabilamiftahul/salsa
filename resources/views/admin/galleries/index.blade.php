@@ -53,15 +53,25 @@
                   {{ optional($gallery->ends_at)->format('d M Y H:i') }}
                 </td>
                 <td class="col-status">
-                  @php
-                    $now = now();
-                    $isCurrentlyActive = $gallery->is_active
-                      && (!optional($gallery->starts_at)->gt($now))
-                      && (!optional($gallery->ends_at)->lt($now));
-                  @endphp
-                  <span class="{{ $isCurrentlyActive ? 'text-success' : 'text-danger' }}">
-                    {{ $isCurrentlyActive ? 'Aktif' : 'Nonaktif' }}
-                  </span>
+                  <form method="POST" action="{{ route('admin.galleries.toggle-status', $gallery) }}" class="admin-status-form">
+                    @csrf
+                    @method('PATCH')
+                    <input type="hidden" name="is_active" value="0">
+                    <div class="custom-control custom-switch admin-status-switch">
+                      <input
+                        type="checkbox"
+                        class="custom-control-input"
+                        id="gallery_status_{{ $gallery->id }}"
+                        name="is_active"
+                        value="1"
+                        onchange="this.form.submit()"
+                        {{ $gallery->is_active ? 'checked' : '' }}
+                      >
+                      <label class="custom-control-label" for="gallery_status_{{ $gallery->id }}">
+                        {{ $gallery->is_active ? 'Aktif' : 'Nonaktif' }}
+                      </label>
+                    </div>
+                  </form>
                 </td>
                 <td class="col-actions d-flex">
                   <a href="{{ route('admin.galleries.edit', $gallery) }}" class="btn btn-sm btn-outline-light btn-icon-action mr-2" aria-label="Edit" title="Edit">

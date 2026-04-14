@@ -164,6 +164,13 @@
   color: #111827;
 }
 
+.theme-light .badge.badge-outline-light {
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.35) !important;
+  background-color: rgba(15, 23, 42, 0.04) !important;
+  font-weight: 600;
+}
+
 .theme-toggle-btn {
   border-radius: 50%;
   font-weight: 600;
@@ -186,4 +193,38 @@
   width: 100%;
   height: 100%;
   margin: 0;
+}
+
+.admin-status-form {
+  margin: 0;
+}
+
+.admin-status-switch {
+  margin: 0;
+  min-width: 118px;
+}
+
+.admin-status-switch .custom-control-label {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.admin-status-switch .custom-control-label::before {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.admin-status-switch .custom-control-input:checked ~ .custom-control-label::before {
+  border-color: #16a34a;
+  background-color: #16a34a;
+}
+
+.admin-status-switch .custom-control-input:not(:checked) ~ .custom-control-label::before {
+  border-color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.35);
+}
+
+.theme-light .admin-status-switch .custom-control-label {
+  color: #111827;
 }

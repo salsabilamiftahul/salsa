@@ -21,6 +21,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/preview-display', [PreviewDisplayController::class, 'edit'])->name('preview.edit');
     Route::put('/preview-display', [PreviewDisplayController::class, 'update'])->name('preview.update');
+    Route::patch('/galleries/{gallery}/toggle-status', [GalleryController::class, 'toggleStatus'])->name('galleries.toggle-status');
+    Route::patch('/main-contents/{mainContent}/toggle-status', [MainContentController::class, 'toggleStatus'])->name('main-contents.toggle-status');
     Route::resource('agendas', AgendaController::class)->except(['show']);
     Route::resource('galleries', GalleryController::class)->except(['show']);
     Route::resource('main-contents', MainContentController::class)->except(['show']);

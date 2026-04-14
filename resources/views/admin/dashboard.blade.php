@@ -66,7 +66,6 @@
                   <th>Jenis</th>
                   <th class="col-title">Judul</th>
                   <th>Dibuat</th>
-                  <th class="col-status">Status</th>
                   <th class="col-actions">Aksi</th>
                 </tr>
               </thead>
@@ -76,11 +75,6 @@
                     <td>{{ $content['type'] }}</td>
                     <td class="col-title">{{ $content['title'] }}</td>
                     <td>{{ optional($content['created_at'])->format('d M Y H:i') }}</td>
-                    <td class="col-status">
-                      <span class="{{ $content['status_class'] }}">
-                        {{ $content['status_label'] }}
-                      </span>
-                    </td>
                     <td class="col-actions">
                       <a href="{{ $content['edit_url'] }}" class="btn btn-sm btn-outline-light btn-icon-action mr-2" aria-label="Edit" title="Edit">
                         <i class="mdi mdi-pencil"></i>
@@ -92,7 +86,7 @@
                   </tr>
                 @empty
                   <tr>
-                    <td colspan="5" class="text-muted">Belum ada data.</td>
+                    <td colspan="4" class="text-muted">Belum ada data.</td>
                   </tr>
                 @endforelse
               </tbody>

@@ -25,43 +25,45 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        {{-- Filter kategori, status, media, jadwal --}}
-        <div class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-lg-center mb-3">
-          <div class="d-flex align-items-center text-muted mb-2 mb-lg-0 mr-lg-2">
-            <i class="mdi mdi-filter-variant mr-1"></i>
-            <span>Filter</span>
-          </div>
-          <div class="d-flex flex-row flex-nowrap align-items-center w-100 w-lg-auto overflow-auto" style="gap: .5rem;">
-            <select name="category" class="custom-select custom-select-sm w-auto filter-select" onchange="this.form.submit()">
-              <option value="">Semua Kategori</option>
-              <option value="kegiatan" {{ $category === 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
-              <option value="spp" {{ $category === 'spp' ? 'selected' : '' }}>SPP</option>
-              <option value="sop" {{ $category === 'sop' ? 'selected' : '' }}>SOP</option>
-              <option value="video" {{ $category === 'video' ? 'selected' : '' }}>Video</option>
-              <option value="lain-lain" {{ $category === 'lain-lain' ? 'selected' : '' }}>Lain-lain</option>
-            </select>
-            <select name="status" class="custom-select custom-select-sm w-auto filter-select" onchange="this.form.submit()">
-              <option value="">Semua Status</option>
-              <option value="active" {{ $status === 'active' ? 'selected' : '' }}>Aktif</option>
-              <option value="inactive" {{ $status === 'inactive' ? 'selected' : '' }}>Nonaktif</option>
-            </select>
-            <select name="media" class="custom-select custom-select-sm w-auto filter-select" onchange="this.form.submit()">
-              <option value="">Semua Media</option>
-              <option value="image" {{ $media === 'image' ? 'selected' : '' }}>Gambar</option>
-              <option value="video" {{ $media === 'video' ? 'selected' : '' }}>Video</option>
-            </select>
-            <select name="schedule" class="custom-select custom-select-sm w-auto filter-select" onchange="this.form.submit()">
-              <option value="">Semua Jadwal</option>
-              <option value="ongoing" {{ $schedule === 'ongoing' ? 'selected' : '' }}>Sedang Berjalan</option>
-              <option value="upcoming" {{ $schedule === 'upcoming' ? 'selected' : '' }}>Akan Datang</option>
-              <option value="ended" {{ $schedule === 'ended' ? 'selected' : '' }}>Sudah Berakhir</option>
-              <option value="unscheduled" {{ $schedule === 'unscheduled' ? 'selected' : '' }}>Tanpa Jadwal</option>
-            </select>
-            <a href="{{ route('admin.main-contents.index') }}" class="btn btn-outline-light btn-sm">Reset</a>
-          </div>
-        </div>
+    {{-- Filter kategori, status, media, jadwal --}}
+    <div class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-lg-center mb-3">
+      <div class="d-flex align-items-center text-muted mb-2 mb-lg-0 mr-lg-2">
+        <i class="mdi mdi-filter-variant mr-1"></i>
+        <span>Filter</span>
+      </div>
+      <div class="d-flex flex-row flex-nowrap align-items-center w-100 w-lg-auto overflow-auto" style="gap: .5rem;">
+        <select name="category" class="custom-select custom-select-sm w-auto filter-select" onchange="this.form.submit()">
+          <option value="">Semua Kategori</option>
+          <option value="kegiatan" {{ $category === 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
+          <option value="spp" {{ $category === 'spp' ? 'selected' : '' }}>SPP</option>
+          <option value="sop" {{ $category === 'sop' ? 'selected' : '' }}>SOP</option>
+          <option value="video" {{ $category === 'video' ? 'selected' : '' }}>Video</option>
+          <option value="lain-lain" {{ $category === 'lain-lain' ? 'selected' : '' }}>Lain-lain</option>
+        </select>
+        <select name="status" class="custom-select custom-select-sm w-auto filter-select" onchange="this.form.submit()">
+          <option value="">Semua Status</option>
+          <option value="active" {{ $status === 'active' ? 'selected' : '' }}>Aktif</option>
+          <option value="inactive" {{ $status === 'inactive' ? 'selected' : '' }}>Nonaktif</option>
+        </select>
+        <select name="media" class="custom-select custom-select-sm w-auto filter-select" onchange="this.form.submit()">
+          <option value="">Semua Media</option>
+          <option value="image" {{ $media === 'image' ? 'selected' : '' }}>Gambar</option>
+          <option value="video" {{ $media === 'video' ? 'selected' : '' }}>Video</option>
+        </select>
+        <select name="schedule" class="custom-select custom-select-sm w-auto filter-select" onchange="this.form.submit()">
+          <option value="">Semua Jadwal</option>
+          <option value="ongoing" {{ $schedule === 'ongoing' ? 'selected' : '' }}>Sedang Berjalan</option>
+          <option value="upcoming" {{ $schedule === 'upcoming' ? 'selected' : '' }}>Akan Datang</option>
+          <option value="ended" {{ $schedule === 'ended' ? 'selected' : '' }}>Sudah Berakhir</option>
+          <option value="unscheduled" {{ $schedule === 'unscheduled' ? 'selected' : '' }}>Tanpa Jadwal</option>
+        </select>
+        <a href="{{ route('admin.main-contents.index') }}" class="btn btn-outline-light btn-sm">Reset</a>
+      </div>
+    </div>
+  </form>
+
+  <div class="card">
+    <div class="card-body">
 
         <div class="table-responsive">
           <table class="table">
@@ -103,15 +105,25 @@
                     {{ optional($content->ends_at)->format('d M Y H:i') }}
                   </td>
                   <td class="col-status">
-                    @php
-                      $now = now();
-                      $isCurrentlyActive = $content->is_active
-                        && (!optional($content->starts_at)->gt($now))
-                        && (!optional($content->ends_at)->lt($now));
-                    @endphp
-                    <span class="{{ $isCurrentlyActive ? 'text-success' : 'text-danger' }}">
-                      {{ $isCurrentlyActive ? 'Aktif' : 'Nonaktif' }}
-                    </span>
+                    <form method="POST" action="{{ route('admin.main-contents.toggle-status', $content) }}" class="admin-status-form">
+                      @csrf
+                      @method('PATCH')
+                      <input type="hidden" name="is_active" value="0">
+                      <div class="custom-control custom-switch admin-status-switch">
+                        <input
+                          type="checkbox"
+                          class="custom-control-input"
+                          id="main_content_status_{{ $content->id }}"
+                          name="is_active"
+                          value="1"
+                          onchange="this.form.submit()"
+                          {{ $content->is_active ? 'checked' : '' }}
+                        >
+                        <label class="custom-control-label" for="main_content_status_{{ $content->id }}">
+                          {{ $content->is_active ? 'Aktif' : 'Nonaktif' }}
+                        </label>
+                      </div>
+                    </form>
                   </td>
                   <td class="col-actions d-flex">
                     <a href="{{ route('admin.main-contents.edit', $content) }}" class="btn btn-sm btn-outline-light btn-icon-action mr-2" aria-label="Edit" title="Edit">
@@ -133,7 +145,6 @@
         <div class="mt-3">
           {{ $contents->links() }}
         </div>
-      </div>
     </div>
-  </form>
+  </div>
 @endsection

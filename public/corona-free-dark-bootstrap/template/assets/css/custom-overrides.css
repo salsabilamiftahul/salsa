@@ -45,7 +45,7 @@ html.theme-light .custom-select::placeholder {
 .table .col-title-narrow { width: auto; max-width: 260px; }
 .table .col-description { width: auto; max-width: 360px; }
 .table .col-schedule { width: auto; max-width: 220px; }
-.table .col-status { white-space: nowrap; min-width: 90px; }
+.table .col-status { white-space: nowrap; min-width: 130px; }
 .table .col-actions { white-space: nowrap; }
 .table .col-actions .btn { white-space: nowrap; }
 .table td { padding-top: 1.1rem; padding-bottom: 1.1rem; line-height: 1.5; color: #ffffff; }
