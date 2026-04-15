@@ -98,7 +98,7 @@ body.display-tv {
 }
 
 .tv-panel {
-  background: var(--display-panel-bg, rgba(10, 14, 26, 0.6));
+  background: var(--display-card-bg, rgba(10, 14, 26, 0.92));
   border: 1px solid var(--display-border, rgba(255, 255, 255, 0.08));
   border-radius: 18px;
   padding: 0.2rem;
@@ -345,7 +345,7 @@ body.display-tv {
   min-height: 3.2rem;
   padding: 0.55rem 1.1rem;
   border-radius: 16px;
-  background: var(--display-marquee-bg, rgba(10, 12, 22, 0.95));
+  background: var(--display-card-bg, rgba(10, 14, 26, 0.92));
   border: 1px solid var(--display-border, rgba(255, 255, 255, 0.08));
   box-shadow: 0 8px 20px var(--display-shadow, rgba(0, 0, 0, 0.35));
   overflow: hidden;

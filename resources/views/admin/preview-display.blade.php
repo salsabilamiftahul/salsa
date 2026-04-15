@@ -23,7 +23,7 @@
                   <iframe title="Preview Display" src="{{ route('display') }}" loading="lazy"></iframe>
                 </div>
               </div>
-              <small class="text-muted d-block mt-2">Preview ini mengikuti pengaturan kategori konten dan tema display setelah disimpan.</small>
+              <small class="text-muted d-block mt-2">Preview warna ditampilkan langsung. Klik simpan untuk menerapkan permanen ke halaman display.</small>
             </div>
           </div>
         </div>
@@ -42,7 +42,7 @@
                       type="color"
                       id="display_background_color_picker"
                       class="preview-display-color-picker"
-                      value="{{ old('display_background_color', $displayBackgroundColor) }}"
+                      value="{{ substr(\App\Support\DisplayTheme::normalizeHexColor(old('display_background_color', $displayBackgroundColor), '#0B0D18'), 0, 7) }}"
                     >
                     <input
                       type="text"
@@ -50,7 +50,7 @@
                       name="display_background_color"
                       class="form-control preview-display-color-code-input"
                       value="{{ old('display_background_color', $displayBackgroundColor) }}"
-                      placeholder="#0B0D18"
+                      placeholder="#0B0D18 atau #0B0D18CC"
                       inputmode="text"
                       autocomplete="off"
                       spellcheck="false"
@@ -68,7 +68,7 @@
                       type="color"
                       id="display_text_color_picker"
                       class="preview-display-color-picker"
-                      value="{{ old('display_text_color', $displayTextColor) }}"
+                      value="{{ substr(\App\Support\DisplayTheme::normalizeHexColor(old('display_text_color', $displayTextColor), '#F8FAFC'), 0, 7) }}"
                     >
                     <input
                       type="text"
@@ -76,7 +76,7 @@
                       name="display_text_color"
                       class="form-control preview-display-color-code-input"
                       value="{{ old('display_text_color', $displayTextColor) }}"
-                      placeholder="#F8FAFC"
+                      placeholder="#F8FAFC atau #F8FAFCCC"
                       inputmode="text"
                       autocomplete="off"
                       spellcheck="false"
@@ -94,7 +94,7 @@
                       type="color"
                       id="display_card_background_color_picker"
                       class="preview-display-color-picker"
-                      value="{{ old('display_card_background_color', $displayCardBackgroundColor) }}"
+                      value="{{ substr(\App\Support\DisplayTheme::normalizeHexColor(old('display_card_background_color', $displayCardBackgroundColor), '#151B29'), 0, 7) }}"
                     >
                     <input
                       type="text"
@@ -102,33 +102,19 @@
                       name="display_card_background_color"
                       class="form-control preview-display-color-code-input"
                       value="{{ old('display_card_background_color', $displayCardBackgroundColor) }}"
-                      placeholder="#151B29"
+                      placeholder="#151B29 atau #151B29CC"
                       inputmode="text"
                       autocomplete="off"
                       spellcheck="false"
                     >
                   </div>
+                  <small class="text-muted d-block mt-1">Format transparan: <code>#RRGGBBAA</code> (AA di belakang).</small>
                   @error('display_card_background_color')
                     <div class="text-danger small mt-2">{{ $message }}</div>
                   @enderror
                 </div>
               </div>
 
-              <div
-                class="preview-theme-swatch mb-3"
-                id="previewThemeSwatch"
-                style="background: {{ old('display_background_color', $displayBackgroundColor) }}; color: {{ old('display_text_color', $displayTextColor) }};"
-              >
-                <div class="preview-theme-swatch-title">Pratinjau Tema</div>
-                <div class="preview-theme-swatch-subtitle" id="previewThemeTextLabel">Warna teks: {{ old('display_text_color', $displayTextColor) }}</div>
-                <div
-                  class="preview-theme-swatch-card mt-3"
-                  id="previewThemeCard"
-                  style="background: {{ old('display_card_background_color', $displayCardBackgroundColor) }};"
-                >
-                  Contoh warna card display
-                </div>
-              </div>
               <button type="submit" class="btn btn-primary btn-sm">Simpan Pengaturan Tema</button>
             </div>
           </div>
@@ -298,10 +284,8 @@
       const textInput = document.getElementById('display_text_color');
       const cardPicker = document.getElementById('display_card_background_color_picker');
       const cardInput = document.getElementById('display_card_background_color');
-      const themeSwatch = document.getElementById('previewThemeSwatch');
-      const themeTextLabel = document.getElementById('previewThemeTextLabel');
-      const themeCard = document.getElementById('previewThemeCard');
       if (!box || !stage) return;
+      const previewIframe = stage.querySelector('iframe');
 
       const baseWidth = Number(stage.dataset.baseWidth) || 1920;
       const baseHeight = Number(stage.dataset.baseHeight) || 1080;
@@ -328,60 +312,214 @@
           value = '#' + value;
         }
 
-        if (!/^#([0-9A-F]{3}|[0-9A-F]{6})$/.test(value)) {
+        if (!/^#([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$/.test(value)) {
           return fallback;
         }
 
         if (value.length === 4) {
+          value = '#' + value.slice(1).split('').map((char) => char + char).join('');
+        } else if (value.length === 5) {
           value = '#' + value.slice(1).split('').map((char) => char + char).join('');
         }
 
         return value;
       }
 
-      function syncColorInputs(inputEl, pickerEl, fallbackColor) {
+      function toOpaqueHex(hexColor) {
+        const normalized = normalizeHexColor(hexColor, '#000000');
+        return normalized.length === 9 ? normalized.slice(0, 7) : normalized;
+      }
+
+      function syncColorInputs(inputEl, pickerEl, fallbackColor, source) {
         if (!inputEl || !pickerEl) return fallbackColor;
-        const normalized = normalizeHexColor(inputEl.value || pickerEl.value, fallbackColor);
+        let normalized = normalizeHexColor(inputEl.value || fallbackColor, fallbackColor);
+
+        if (source === 'picker') {
+          const pickedColor = normalizeHexColor(pickerEl.value || fallbackColor, fallbackColor);
+          // Picker bawaan browser tidak punya alpha, jadi gunakan warna solid (FF).
+          normalized = toOpaqueHex(pickedColor);
+        }
+
         inputEl.value = normalized;
-        pickerEl.value = normalized;
+        pickerEl.value = toOpaqueHex(normalized);
         return normalized;
       }
 
-      function updateThemePreview() {
-        const backgroundColor = syncColorInputs(backgroundInput, backgroundPicker, '#0B0D18');
-        const textColor = syncColorInputs(textInput, textPicker, '#F8FAFC');
-        const cardColor = syncColorInputs(cardInput, cardPicker, '#151B29');
-        if (themeSwatch) {
-          themeSwatch.style.background = backgroundColor;
-          themeSwatch.style.color = textColor;
+      function hexToRgb(hexColor) {
+        const normalized = toOpaqueHex(hexColor).slice(1);
+        return [
+          parseInt(normalized.slice(0, 2), 16),
+          parseInt(normalized.slice(2, 4), 16),
+          parseInt(normalized.slice(4, 6), 16),
+        ];
+      }
+
+      function rgba(hexColor, alpha) {
+        const rgb = hexToRgb(hexColor);
+        const clampedAlpha = Math.max(0, Math.min(1, Number(alpha) || 0));
+        return 'rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', ' + clampedAlpha.toFixed(3) + ')';
+      }
+
+      function mix(baseColor, targetColor, ratio) {
+        const base = hexToRgb(baseColor);
+        const target = hexToRgb(targetColor);
+        const clampedRatio = Math.max(0, Math.min(1, Number(ratio) || 0));
+        const red = Math.round(base[0] + ((target[0] - base[0]) * clampedRatio));
+        const green = Math.round(base[1] + ((target[1] - base[1]) * clampedRatio));
+        const blue = Math.round(base[2] + ((target[2] - base[2]) * clampedRatio));
+
+        return '#' + [red, green, blue]
+          .map((value) => value.toString(16).padStart(2, '0'))
+          .join('')
+          .toUpperCase();
+      }
+
+      function relativeLuminance(hexColor) {
+        const rgb = hexToRgb(hexColor).map(function (channel) {
+          const value = channel / 255;
+          return value <= 0.03928
+            ? value / 12.92
+            : Math.pow((value + 0.055) / 1.055, 2.4);
+        });
+        return (rgb[0] * 0.2126) + (rgb[1] * 0.7152) + (rgb[2] * 0.0722);
+      }
+
+      function contrastRatio(firstColor, secondColor) {
+        const first = relativeLuminance(firstColor);
+        const second = relativeLuminance(secondColor);
+        const lighter = Math.max(first, second);
+        const darker = Math.min(first, second);
+
+        return (lighter + 0.05) / (darker + 0.05);
+      }
+
+      function pickTextColor(backgroundColor, textColor) {
+        const normalizedText = normalizeHexColor(textColor, '');
+        if (normalizedText) {
+          return normalizedText;
         }
-        if (themeTextLabel) {
-          themeTextLabel.textContent = 'Warna teks: ' + textColor;
+
+        const lightText = '#F8FAFC';
+        const darkText = '#111827';
+        return contrastRatio(backgroundColor, lightText) >= contrastRatio(backgroundColor, darkText)
+          ? lightText
+          : darkText;
+      }
+
+      function buildThemeVariables(backgroundColor, textColor, cardColor) {
+        const resolvedBackground = normalizeHexColor(backgroundColor, '#0B0D18');
+        const resolvedText = pickTextColor(resolvedBackground, textColor);
+        const usesDarkText = toOpaqueHex(resolvedText) === '#111827';
+        const fallbackCard = mix(resolvedBackground, resolvedText, usesDarkText ? 0.1 : 0.14);
+        const resolvedCard = normalizeHexColor(cardColor, fallbackCard);
+        const hasCardAlpha = resolvedCard.length === 9;
+        const cardBackgroundValue = hasCardAlpha ? resolvedCard : rgba(resolvedCard, usesDarkText ? 0.86 : 0.92);
+        const surfaceColor = mix(resolvedBackground, resolvedText, usesDarkText ? 0.14 : 0.06);
+        const galleryOverlay = mix(resolvedBackground, resolvedText, usesDarkText ? 0.18 : 0.28);
+
+        return {
+          '--display-bg': resolvedBackground,
+          '--display-text': resolvedText,
+          '--display-muted': rgba(resolvedText, usesDarkText ? 0.72 : 0.78),
+          '--display-border': rgba(resolvedText, usesDarkText ? 0.12 : 0.08),
+          '--display-border-strong': rgba(resolvedText, usesDarkText ? 0.2 : 0.16),
+          '--display-panel-bg': cardBackgroundValue,
+          '--display-card-bg': cardBackgroundValue,
+          '--display-surface-bg': rgba(surfaceColor, usesDarkText ? 0.88 : 0.9),
+          '--display-marquee-bg': cardBackgroundValue,
+          '--display-gallery-overlay': rgba(galleryOverlay, usesDarkText ? 0.88 : 0.92),
+          '--display-shadow': usesDarkText ? 'rgba(15, 23, 42, 0.16)' : 'rgba(0, 0, 0, 0.3)',
+        };
+      }
+
+      function applyThemeToIframe(themeVariables) {
+        if (!previewIframe) return;
+
+        let previewDocument = null;
+        try {
+          previewDocument = previewIframe.contentDocument;
+        } catch (error) {
+          return;
         }
-        if (themeCard) {
-          themeCard.style.background = cardColor;
-          themeCard.style.color = textColor;
+
+        if (!previewDocument || !previewDocument.documentElement) return;
+
+        const rootStyle = previewDocument.documentElement.style;
+        Object.keys(themeVariables).forEach(function (cssVar) {
+          rootStyle.setProperty(cssVar, themeVariables[cssVar]);
+        });
+
+        if (previewDocument.body) {
+          previewDocument.body.style.background = 'var(--display-bg)';
+          previewDocument.body.style.color = 'var(--display-text)';
         }
+      }
+
+      function updateThemePreview(preferredSource) {
+        const source = preferredSource || {};
+        const backgroundColor = syncColorInputs(backgroundInput, backgroundPicker, '#0B0D18', source.background || 'input');
+        const textColor = syncColorInputs(textInput, textPicker, '#F8FAFC', source.text || 'input');
+        const cardColor = syncColorInputs(cardInput, cardPicker, '#151B29', source.card || 'input');
         box.style.background = backgroundColor;
+        applyThemeToIframe(buildThemeVariables(backgroundColor, textColor, cardColor));
       }
 
       updateThemePreview();
 
-      [backgroundPicker, textPicker, cardPicker].forEach(function (picker) {
-        if (!picker) return;
-        picker.addEventListener('input', updateThemePreview);
-      });
+      if (previewIframe) {
+        previewIframe.addEventListener('load', function () {
+          updateThemePreview();
+        });
+      }
 
-      [backgroundInput, textInput, cardInput].forEach(function (input) {
-        if (!input) return;
-        input.addEventListener('input', function () {
-          const value = String(input.value || '').trim();
-          if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(value)) {
-            updateThemePreview();
+      if (backgroundPicker) {
+        backgroundPicker.addEventListener('input', function () {
+          updateThemePreview({ background: 'picker' });
+        });
+      }
+      if (textPicker) {
+        textPicker.addEventListener('input', function () {
+          updateThemePreview({ text: 'picker' });
+        });
+      }
+      if (cardPicker) {
+        cardPicker.addEventListener('input', function () {
+          updateThemePreview({ card: 'picker' });
+        });
+      }
+
+      if (backgroundInput) {
+        backgroundInput.addEventListener('input', function () {
+          if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(String(backgroundInput.value || '').trim())) {
+            updateThemePreview({ background: 'input' });
           }
         });
-        input.addEventListener('blur', updateThemePreview);
-      });
+        backgroundInput.addEventListener('blur', function () {
+          updateThemePreview({ background: 'input' });
+        });
+      }
+
+      if (textInput) {
+        textInput.addEventListener('input', function () {
+          if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(String(textInput.value || '').trim())) {
+            updateThemePreview({ text: 'input' });
+          }
+        });
+        textInput.addEventListener('blur', function () {
+          updateThemePreview({ text: 'input' });
+        });
+      }
+
+      if (cardInput) {
+        cardInput.addEventListener('input', function () {
+          if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(String(cardInput.value || '').trim())) {
+            updateThemePreview({ card: 'input' });
+          }
+        });
+        cardInput.addEventListener('blur', function () {
+          updateThemePreview({ card: 'input' });
+        });
+      }
     })();
   </script>
 @endpush

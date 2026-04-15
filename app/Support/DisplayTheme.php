@@ -8,12 +8,15 @@ class DisplayTheme
     {
         $backgroundColor = self::normalizeHexColor($backgroundColor);
         $textColor = self::normalizeHexColorValue($textColor) ?? self::textColorFor($backgroundColor);
-        $usesDarkText = $textColor === '#111827';
+        $usesDarkText = self::toOpaqueHex($textColor) === '#111827';
 
-        $panelColor = self::mix($backgroundColor, $textColor, $usesDarkText ? 0.06 : 0.08);
-        $cardColor = self::normalizeHexColorValue($cardBackgroundColor)
+        $normalizedCardColor = self::normalizeHexColorValue($cardBackgroundColor);
+        $cardColor = $normalizedCardColor
             ?? self::mix($backgroundColor, $textColor, $usesDarkText ? 0.1 : 0.14);
         $surfaceColor = self::mix($backgroundColor, $textColor, $usesDarkText ? 0.14 : 0.06);
+        $resolvedCardBackgroundColor = ($normalizedCardColor && strlen($normalizedCardColor) === 9)
+            ? $normalizedCardColor
+            : self::rgba($cardColor, $usesDarkText ? 0.86 : 0.92);
 
         return [
             'backgroundColor' => $backgroundColor,
@@ -21,10 +24,10 @@ class DisplayTheme
             'mutedTextColor' => self::rgba($textColor, $usesDarkText ? 0.72 : 0.78),
             'borderColor' => self::rgba($textColor, $usesDarkText ? 0.12 : 0.08),
             'borderStrongColor' => self::rgba($textColor, $usesDarkText ? 0.2 : 0.16),
-            'panelBackgroundColor' => self::rgba($panelColor, $usesDarkText ? 0.74 : 0.6),
-            'cardBackgroundColor' => self::rgba($cardColor, $usesDarkText ? 0.86 : 0.92),
+            'panelBackgroundColor' => $resolvedCardBackgroundColor,
+            'cardBackgroundColor' => $resolvedCardBackgroundColor,
             'surfaceBackgroundColor' => self::rgba($surfaceColor, $usesDarkText ? 0.88 : 0.9),
-            'marqueeBackgroundColor' => self::rgba(self::mix($backgroundColor, $textColor, $usesDarkText ? 0.08 : 0.1), $usesDarkText ? 0.92 : 0.95),
+            'marqueeBackgroundColor' => $resolvedCardBackgroundColor,
             'galleryOverlayColor' => self::rgba(self::mix($backgroundColor, $textColor, $usesDarkText ? 0.18 : 0.28), $usesDarkText ? 0.88 : 0.92),
             'shadowColor' => $usesDarkText ? 'rgba(15, 23, 42, 0.16)' : 'rgba(0, 0, 0, 0.3)',
         ];
@@ -98,7 +101,7 @@ class DisplayTheme
 
     private static function hexToRgb(string $hexColor): array
     {
-        $hexColor = ltrim(self::normalizeHexColor($hexColor), '#');
+        $hexColor = ltrim(self::toOpaqueHex($hexColor), '#');
 
         return [
             hexdec(substr($hexColor, 0, 2)),
@@ -122,7 +125,7 @@ class DisplayTheme
             $color = '#' . $color;
         }
 
-        if (!preg_match('/^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/', $color)) {
+        if (!preg_match('/^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/', $color)) {
             return null;
         }
 
@@ -136,8 +139,30 @@ class DisplayTheme
                 $color[3],
                 $color[3]
             );
+        } elseif (strlen($color) === 5) {
+            $color = sprintf(
+                '#%s%s%s%s%s%s%s%s',
+                $color[1],
+                $color[1],
+                $color[2],
+                $color[2],
+                $color[3],
+                $color[3],
+                $color[4],
+                $color[4]
+            );
         }
 
         return strtoupper($color);
+    }
+
+    private static function toOpaqueHex(string $hexColor): string
+    {
+        $normalized = self::normalizeHexColor($hexColor);
+        if (strlen($normalized) === 9) {
+            return substr($normalized, 0, 7);
+        }
+
+        return $normalized;
     }
 }

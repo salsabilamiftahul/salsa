@@ -49,7 +49,7 @@ class PreviewDisplayController extends Controller
             'displayTextColor' => $displayTheme['textColor'],
             'displayCardBackgroundColor' => DisplayTheme::normalizeHexColor(
                 $settings->get('display_card_background_color'),
-                $displayTheme['cardBackgroundColor']
+                '#151B29'
             ),
         ]);
     }
@@ -60,9 +60,9 @@ class PreviewDisplayController extends Controller
         $data = $request->validate([
             'categories' => ['nullable', 'array'],
             'categories.*' => ['string', 'in:' . implode(',', $this->availableCategories())],
-            'display_background_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}){1,2}$/'],
-            'display_text_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}){1,2}$/'],
-            'display_card_background_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}){1,2}$/'],
+            'display_background_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/'],
+            'display_text_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/'],
+            'display_card_background_color' => ['required', 'regex:/^#(?:[A-Fa-f0-9]{3}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/'],
         ]);
 
         $categories = array_values(array_unique($data['categories'] ?? []));

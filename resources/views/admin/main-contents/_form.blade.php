@@ -54,8 +54,4 @@
       value="{{ old('ends_at', optional($mainContent->ends_at ?? null)->format('Y-m-d\TH:i')) }}">
   </div>
 </div>
-<div class="form-group form-check">
-  <input type="checkbox" name="is_active" id="is_active" class="form-check-input" value="1"
-    {{ old('is_active', $mainContent->is_active ?? true) ? 'checked' : '' }}>
-  <label for="is_active" class="form-check-label">Aktif</label>
-</div>
+

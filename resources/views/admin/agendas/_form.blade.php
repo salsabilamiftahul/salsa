@@ -16,8 +16,8 @@
       value="{{ old('agenda_time', optional($agenda->starts_at ?? null)->format('H:i')) }}" required>
   </div>
   <div class="form-group col-md-4">
-    <label for="agenda_time_end">Jam Selesai</label>
+    <label for="agenda_time_end">Jam Selesai <span class="text-danger">*</span></label>
     <input type="time" name="agenda_time_end" id="agenda_time_end" class="form-control"
-      value="{{ old('agenda_time_end', optional($agenda->ends_at ?? null)->format('H:i')) }}">
+      value="{{ old('agenda_time_end', optional($agenda->ends_at ?? null)->format('H:i')) }}" required>
   </div>
 </div>

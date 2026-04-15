@@ -135,6 +135,15 @@
   border-radius: 6px;
 }
 
+/* Override template rule `.table td img` that forces 30x30 circle thumbnails. */
+.table th img.admin-thumb,
+.table td img.admin-thumb {
+  width: 84px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 .admin-preview-image {
   max-width: 240px;
   width: 100%;
