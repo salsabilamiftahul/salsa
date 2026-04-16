@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::query()->updateOrCreate(
-            ['username' => 'admin'],
+            ['username' => 'super admin'],
             [
-                'name' => 'Admin',
+                'name' => 'Super Admin',
                 'password' => Hash::make('12345'),
                 'is_admin' => true,
                 'is_super_admin' => true,
